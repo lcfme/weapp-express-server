@@ -24,6 +24,7 @@
     "connect-busboy": "0.0.2",
     "cors": "^2.8.4",
     "express": "^4.16.4",
-    "install": "^0.12.2"
+    "install": "^0.12.2",
+    "ws": "^6.1.0"
   }
 }

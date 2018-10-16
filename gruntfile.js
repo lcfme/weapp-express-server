@@ -57,7 +57,7 @@ module.exports = function(grunt) {
       }
     });
     serverProcess.on('close', e => {
-      log('server stop.')('red');
+      log(e)('red');
     });
     serverProcess.stderr.on('data', data => {
       log(data)('red');
