@@ -1,0 +1,29 @@
+{
+  "name": "weapp-express-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.1.2",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-flow": "^7.0.0",
+    "@babel/preset-stage-2": "^7.0.0",
+    "chalk": "^2.4.1",
+    "flow-bin": "^0.83.0",
+    "grunt": "^1.0.3",
+    "grunt-babel": "^8.0.0",
+    "grunt-contrib-clean": "^2.0.0",
+    "grunt-contrib-watch": "^1.1.0"
+  },
+  "dependencies": {
+    "connect-busboy": "0.0.2",
+    "cors": "^2.8.4",
+    "express": "^4.16.4",
+    "install": "^0.12.2"
+  }
+}
