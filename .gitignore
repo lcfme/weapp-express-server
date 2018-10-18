@@ -4,3 +4,4 @@ node_modules/
 .flowconfig
 flow-typed/
 dist/
+/logs/
