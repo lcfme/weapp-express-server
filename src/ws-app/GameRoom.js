@@ -124,7 +124,7 @@ class GameRoom {
             throw 'No Matched COMMAND';
         }
       } catch (err) {
-        console.log(err);
+        console.error(err);
       }
     };
     up.socket.on('close', close);
