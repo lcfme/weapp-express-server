@@ -191,7 +191,7 @@ class GameRoom {
           winer = upwrap;
           winer.userpeer.sendJSON({
             cmd: 'game_winer',
-            userId: upwrap.userpeer.userId
+            userId: winer.userpeer.userId
           });
         }
       }
