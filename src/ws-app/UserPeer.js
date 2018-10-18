@@ -73,6 +73,7 @@ class UserPeer {
     try {
       this.socket.send(JSON.stringify(o));
     } catch (err) {
+      console.error(err);
       this.destroy();
     }
   }

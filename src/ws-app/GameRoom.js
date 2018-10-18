@@ -29,6 +29,7 @@ class GameRoom {
   removeUserSocketListener: Array<Function>;
   currentState: string;
   upwrapArray: Array<UserPeerWraperForGameRoom>;
+  lockForSubmitAnwser: boolean;
   constructor(pm: PeerManager, ...users: Array<UserPeer>) {
     this.pm = pm;
     this.users = users.slice(0, 2);
@@ -36,16 +37,25 @@ class GameRoom {
       up => new UserPeerWraperForGameRoom(up, this)
     );
     this.repeat = 0;
+    this.lockForSubmitAnwser = false;
     this.roomId = uuid();
     if (this.users.length !== 2) {
       throw new Error('Invalid User Count');
     }
+    this.callUsersMethod('startGame', this);
     this.currentState = GameRoom.STATE.PREPARE;
     this.currentQuestionIndex = 0;
-    this.callUsersMethod('startGame', this);
-    this.broadCast({
-      roomId: this.roomId
-    });
+
+    for (let i = this.users.length; i--; ) {
+      const user = this.users[i];
+      user.sendJSON({
+        cmd: 'game_room_created',
+        roomId: this.roomId,
+        others: this.users
+          .filter(up => up.userId !== user.userId)
+          .map(up => up.userId)
+      });
+    }
 
     /**
      * 处理试题
@@ -71,40 +81,50 @@ class GameRoom {
   }
 
   setUserSocket(upwrap: UserPeerWraperForGameRoom) {
-    var up = upwrap.userpeer;
+    const up = upwrap.userpeer;
     const close = e => {
       this.onPeerQuit(upwrap);
     };
     const message = data => {
-      const msgObject = JSON.parse(data);
-      switch (msgObject.cmd) {
-        case 'player_ready':
-          upwrap.ready = true;
-          let flag = true;
-          for (let i = this.upwrapArray.length; i--; ) {
-            if (!this.upwrapArray[i].ready) {
-              flag = false;
+      try {
+        const msgObject = JSON.parse(data);
+        switch (msgObject.cmd) {
+          case 'player_ready':
+            upwrap.ready = true;
+            let flag = true;
+            for (let i = this.upwrapArray.length; i--; ) {
+              if (!this.upwrapArray[i].ready) {
+                flag = false;
+                break;
+              }
+            }
+            if (flag) {
+              this.startGame();
+            }
+            break;
+          case 'answer_question':
+            if (this.lockForSubmitAnwser) {
               break;
             }
-          }
-          if (flag) {
-            this.startGame();
-          }
-          break;
-        case 'answer_question':
-          const anwser = msgObject.anwser;
-          const qIndex = isNaN(msgObject.index)
-            ? msgObject.index
-            : this.currentQuestionIndex;
-          const question = this.questions[qIndex];
-          const isRight = anwser === question.anwser;
-          upwrap.anwsers[qIndex] = {
-            anwser,
-            right: isRight
-          };
-          break;
-        default:
-          console.error('No Matched COMMAND');
+            const anwser = msgObject.anwser;
+            const qIndex = isNaN(msgObject.index)
+              ? msgObject.index
+              : this.currentQuestionIndex;
+            const question = this.questions[qIndex];
+            const isRight = anwser === question.anwser;
+            if (isRight && qIndex === this.currentQuestionIndex) {
+              this.lockForSubmitAnwser = true;
+            }
+            upwrap.anwsers[qIndex] = {
+              anwser,
+              right: isRight
+            };
+            break;
+          default:
+            throw 'No Matched COMMAND';
+        }
+      } catch (err) {
+        console.log(err);
       }
     };
     up.socket.on('close', close);
@@ -128,7 +148,7 @@ class GameRoom {
     if (this.currentState !== GameRoom.STATE.START) {
       return;
     }
-    var question = this.questions[this.currentQuestionIndex];
+    const question = this.questions[this.currentQuestionIndex];
     this.broadCast({
       cmd: 'next_question',
       index: this.currentQuestionIndex,
@@ -137,6 +157,7 @@ class GameRoom {
 
     setTimeout(() => {
       this.currentQuestionIndex += 1;
+      this.lockForSubmitAnwser = false;
       if (this.currentQuestionIndex < this.questions.length) {
         this.startSequence();
       } else {
@@ -150,12 +171,10 @@ class GameRoom {
     }
   }
   onPeerQuit(upwrap: UserPeerWraperForGameRoom) {
-    console.log('game: peer quit:');
     upwrap.abort = true;
     this.broadCast({
       cmd: 'peer_quit'
     });
-
     this.finishGame(GameRoom.CONST.PEER_QUIT);
   }
   broadCast(msg) {
@@ -170,29 +189,36 @@ class GameRoom {
     this.repeat = setInterval(() => {}, 5000);
   }
   finishGame(excpt: string) {
-    if (excpt === GameRoom.CONST.NORMAL_OVER) {
-      let winer: UserPeerWraperForGameRoom | void;
-      for (let i = this.upwrapArray.length; i--; ) {
-        var upwrap = this.upwrapArray[i];
-        if (!winer) winer = upwrap;
-        if (upwrap.getRightQuestionNumber() > winer.getRightQuestionNumber()) {
-          winer = upwrap;
+    if (this.currentState === GameRoom.STATE.FINISH) {
+      return;
+    }
+    if (this.currentState === GameRoom.STATE.START) {
+      if (excpt === GameRoom.CONST.NORMAL_OVER) {
+        let winer: UserPeerWraperForGameRoom | void;
+        for (let i = this.upwrapArray.length; i--; ) {
+          let upwrap = this.upwrapArray[i];
+          if (!winer) winer = upwrap;
+          if (
+            upwrap.getRightQuestionNumber() > winer.getRightQuestionNumber()
+          ) {
+            winer = upwrap;
+          }
         }
-      }
-      this.broadCast({
-        cmd: 'game_winer',
-        userId: winer.userpeer.userId
-      });
-    } else if (excpt === GameRoom.CONST.PEER_QUIT) {
-      let winer: UserPeerWraperForGameRoom | void;
-      for (let i = this.upwrapArray.length; i--; ) {
-        const upwrap = this.upwrapArray[i];
-        if (!upwrap.abort) {
-          winer = upwrap;
-          winer.userpeer.sendJSON({
-            cmd: 'game_winer',
-            userId: winer.userpeer.userId
-          });
+        this.broadCast({
+          cmd: 'game_winer',
+          userId: winer.userpeer.userId
+        });
+      } else if (excpt === GameRoom.CONST.PEER_QUIT) {
+        let winer: UserPeerWraperForGameRoom | void;
+        for (let i = this.upwrapArray.length; i--; ) {
+          const upwrap = this.upwrapArray[i];
+          if (!upwrap.abort) {
+            winer = upwrap;
+            winer.userpeer.sendJSON({
+              cmd: 'game_winer',
+              userId: winer.userpeer.userId
+            });
+          }
         }
       }
     }
