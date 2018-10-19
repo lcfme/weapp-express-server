@@ -112,7 +112,7 @@ class GameRoom {
               : msgObject.index;
             const question = this.questions[qIndex];
             const isRight = anwser === question.anwser;
-            console.log(isRight, upwrap.userpeer.userId);
+
             if (isRight && qIndex === this.currentQuestionIndex) {
               this.lockForSubmitAnwser = true;
               this.broadCast({
@@ -120,6 +120,7 @@ class GameRoom {
                 userId: upwrap.userpeer.userId
               });
             }
+
             upwrap.anwsers[qIndex] = {
               anwser,
               right: isRight
