@@ -4,8 +4,23 @@ import pm from './PeerManager';
 
 export function onConnection(socket, req) {
   const urlObject = url.parse(req.url, true);
-  if (urlObject && urlObject.query && urlObject.query.token) {
+  if (
+    urlObject &&
+    urlObject.query &&
+    urlObject.query.token &&
+    urlObject.query.nickName &&
+    urlObject.query.avatarUrl
+  ) {
     const token = urlObject.query.token;
-    new UserPeer(token, socket, pm);
+    const nickName = urlObject.query.nickName;
+    const avatarUrl = decodeURIComponent(urlObject.query.avatarUrl);
+    const userInfo = {
+      userId: token,
+      nickName,
+      avatarUrl
+    };
+    new UserPeer(userInfo, socket, pm);
+  } else {
+    socket.close();
   }
 }

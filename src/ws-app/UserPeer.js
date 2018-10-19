@@ -2,18 +2,33 @@ import WebSocket from 'ws';
 import { PeerManager } from './PeerManager';
 import GameRoom from './GameRoom';
 
+type UserInfo = {
+  userId: string,
+  nickName: string,
+  avatarUrl: string
+};
+
 class UserPeer {
   userId: string;
   socket: WebSocket;
   pm: PeerManager;
   gameRoom: GameRoom | null;
   active: boolean;
-  constructor(userId: string, socket: WebSocket, pm: PeerManager) {
-    if (typeof userId !== 'string' || !socket) {
-      console.error(arguments.callee, userId, socket);
+  constructor(
+    { userId, nickName, avatarUrl }: UserInfo,
+    socket: WebSocket,
+    pm: PeerManager
+  ) {
+    if (
+      typeof userId !== 'string' ||
+      typeof nickName !== 'string' ||
+      typeof avatarUrl !== 'string'
+    ) {
       throw new Error('Invalid Call');
     }
     this.userId = String(userId);
+    this.avatarUrl = String(avatarUrl);
+    this.nickName = String(nickName);
     this.socket = socket;
     this.pm = pm;
     this.gameRoom = null;

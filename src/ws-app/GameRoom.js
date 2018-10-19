@@ -53,7 +53,11 @@ class GameRoom {
         roomId: this.roomId,
         others: this.users
           .filter(up => up.userId !== user.userId)
-          .map(up => up.userId)
+          .map(up => ({
+            userId: up.userId,
+            avatarUrl: up.avatarUrl,
+            nickName: up.nickName
+          }))
       });
     }
 

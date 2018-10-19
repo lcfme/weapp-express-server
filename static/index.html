@@ -12,7 +12,7 @@
   <div id="play">请求玩游戏</div>
   <div id="ready">准备好</div>
   <script>
-    const ws = new WebSocket('ws://localhost:4321?token=' + Math.random().toString(16).substr(2));
+    const ws = new WebSocket('ws://localhost:4321?token=' + Math.random().toString(16).substr(2) + '&avatarUrl=https%3A%2F%2Fwx.qlogo.cn%2Fmmopen%2Fvi_32%2FDYAIOgq83eqN4neTfzJ7aMRib5icV0rmibYfb32vMPoMM39k3whObMubZLjc2F8ZBLIgJyHSskJpRYLoF3eRXsFVw%2F132&nickName=%E7%82%92%E9%A5%AD%E5%93%A5%E5%93%A5');
     var playBtn = document.querySelector('#play');
     var readyBtn = document.querySelector('#ready');
     playBtn.addEventListener('click', function () {
