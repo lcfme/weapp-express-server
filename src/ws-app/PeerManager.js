@@ -36,6 +36,10 @@ export class PeerManager extends EventEmitter {
     }, 5000);
   }
   onPeer(userPeer: UserPeer) {
+    const _up = this.peerByUserId.get(userPeer.userId);
+    if (_up) {
+      _up.socket.close();
+    }
     this.peerByUserId.set(userPeer.userId, userPeer);
     let i = 0;
     while (i < this.waitQueueId.length) {

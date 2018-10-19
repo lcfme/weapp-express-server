@@ -61,7 +61,6 @@ class UserPeer {
     this.active = false;
     this.pm.emit(PeerManager.EVENT.QUIT, this);
     this.socket.removeAllListeners();
-    this.socket.close();
   }
   startGame(gr: GameRoom) {
     this.gameRoom = gr;
