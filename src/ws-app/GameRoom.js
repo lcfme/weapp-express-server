@@ -108,12 +108,17 @@ class GameRoom {
             }
             const anwser = msgObject.anwser;
             const qIndex = isNaN(msgObject.index)
-              ? msgObject.index
-              : this.currentQuestionIndex;
+              ? this.currentQuestionIndex
+              : msgObject.index;
             const question = this.questions[qIndex];
             const isRight = anwser === question.anwser;
+            console.log(isRight, upwrap.userpeer.userId);
             if (isRight && qIndex === this.currentQuestionIndex) {
               this.lockForSubmitAnwser = true;
+              this.broadCast({
+                cmd: 'broadcast_result',
+                userId: upwrap.userpeer.userId
+              });
             }
             upwrap.anwsers[qIndex] = {
               anwser,
@@ -145,6 +150,10 @@ class GameRoom {
     }, 3000);
   }
   startSequence() {
+    this.lockForSubmitAnwser = false;
+    if (this.currentQuestionIndex >= this.questions.length) {
+      this.finishGame(GameRoom.CONST.NORMAL_OVER);
+    }
     if (this.currentState !== GameRoom.STATE.START) {
       return;
     }
@@ -157,7 +166,6 @@ class GameRoom {
 
     setTimeout(() => {
       this.currentQuestionIndex += 1;
-      this.lockForSubmitAnwser = false;
       if (this.currentQuestionIndex < this.questions.length) {
         this.startSequence();
       } else {
