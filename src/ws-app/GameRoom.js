@@ -228,7 +228,8 @@ class GameRoom {
         }
         this.broadCast({
           cmd: 'game_winer',
-          userId: winer.userpeer.userId
+          userId: winer.userpeer.userId,
+          right: winer.getRightQuestionNumber()
         });
       } else if (excpt === GameRoom.CONST.PEER_QUIT) {
         let winer: UserPeerWraperForGameRoom | void;
@@ -238,7 +239,8 @@ class GameRoom {
             winer = upwrap;
             winer.userpeer.sendJSON({
               cmd: 'game_winer',
-              userId: winer.userpeer.userId
+              userId: winer.userpeer.userId,
+              right: winer.getRightQuestionNumber()
             });
           }
         }
