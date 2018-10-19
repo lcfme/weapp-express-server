@@ -103,28 +103,37 @@ class GameRoom {
             }
             break;
           case 'answer_question':
-            if (this.lockForSubmitAnswer) {
+            if (upwrap.answeredCurrentQuestion) {
               break;
             }
+            upwrap.answeredCurrentQuestion = true;
+
             const answer = msgObject.answer;
             const qIndex = isNaN(msgObject.index)
               ? this.currentQuestionIndex
               : msgObject.index;
             const question = this.questions[qIndex];
-            const isRight = answer === question.answer;
+            const isRight = this.lockForSubmitAnswer
+              ? false
+              : answer === question.answer;
 
             if (isRight && qIndex === this.currentQuestionIndex) {
-              this.lockForSubmitAnswer = true;
               this.broadCast({
                 cmd: 'broadcast_result',
                 userId: upwrap.userpeer.userId
               });
+              upwrap.answers[qIndex] = {
+                answer,
+                right: isRight
+              };
+              this.lockForSubmitAnswer = true;
+            } else if (!isRight && qIndex === this.currentQuestionIndex) {
+              upwrap.answers[qIndex] = {
+                answer,
+                right: isRight
+              };
             }
 
-            upwrap.answers[qIndex] = {
-              answer,
-              right: isRight
-            };
             break;
           default:
             throw 'No Matched COMMAND';
@@ -152,6 +161,10 @@ class GameRoom {
   }
   startSequence() {
     this.lockForSubmitAnswer = false;
+    for (let i = this.upwrapArray.length; i--; ) {
+      const upwrap = this.upwrapArray[i];
+      upwrap.answeredCurrentQuestion = false;
+    }
     if (this.currentQuestionIndex >= this.questions.length) {
       this.finishGame(GameRoom.CONST.NORMAL_OVER);
     }
@@ -249,6 +262,7 @@ class UserPeerWraperForGameRoom {
   answers: Array<{ answer: string, right: boolean } | void>;
   userpeer: UserPeer;
   gameRoom: GameRoom;
+  answeredCurrentQuestion: boolean;
   abort: boolean;
   __right_number__: number | void;
   constructor(up: UserPeer, gr: GameRoom) {
@@ -257,6 +271,7 @@ class UserPeerWraperForGameRoom {
     this.answers = [];
     this.gameRoom = gr;
     this.abort = false;
+    this.answeredCurrentQuestion = false;
   }
   getRightQuestionNumber(force: boolean): number {
     if (this.__right_number__ && !force) {
