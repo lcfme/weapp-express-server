@@ -145,8 +145,8 @@ class GameRoom {
     up.socket.on('close', close);
     up.socket.on('message', message);
     return () => {
-      up.socket.off('close', close);
-      up.socket.off('message', message);
+      up.socket.removeListener('close', close);
+      up.socket.removeListener('message', message);
     };
   }
 
