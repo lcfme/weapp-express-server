@@ -38,7 +38,17 @@ export class PeerManager extends EventEmitter {
   onPeer(userPeer: UserPeer) {
     const _up = this.peerByUserId.get(userPeer.userId);
     if (_up) {
-      _up.socket.close();
+      _up.socket.send(
+        {
+          cmd: 'kicked_off'
+        },
+        err => {
+          if (err) {
+            console.log(err);
+          }
+          _up.socket.close();
+        }
+      );
     }
     this.peerByUserId.set(userPeer.userId, userPeer);
     let i = 0;
