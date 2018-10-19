@@ -2,16 +2,16 @@ export default () => {
   return [
     {
       content: 'hello',
-      anwser: 'a',
+      anwser: 1,
       options: ['aaa', 'bbb', 'ccc', 'ddd']
     },
     {
       content: 'foo',
-      anwser: 'd',
+      anwser: 0,
       options: ['aaa', 'bbb', 'ccc', 'ddd']
     },
     {
-      anwser: 'c',
+      anwser: 3,
       content: 'bar',
       options: ['aaa', 'bbb', 'ccc', 'ddd']
     }
