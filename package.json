@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "grunt && pm2 start",
+    "restart": "grunt && pm2 restart",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
