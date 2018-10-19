@@ -29,7 +29,7 @@ class GameRoom {
   removeUserSocketListener: Array<Function>;
   currentState: string;
   upwrapArray: Array<UserPeerWraperForGameRoom>;
-  lockForSubmitAnwser: boolean;
+  lockForSubmitAnswer: boolean;
   constructor(pm: PeerManager, ...users: Array<UserPeer>) {
     this.pm = pm;
     this.users = users.slice(0, 2);
@@ -37,7 +37,7 @@ class GameRoom {
       up => new UserPeerWraperForGameRoom(up, this)
     );
     this.repeat = 0;
-    this.lockForSubmitAnwser = false;
+    this.lockForSubmitAnswer = false;
     this.roomId = uuid();
     if (this.users.length !== 2) {
       throw new Error('Invalid User Count');
@@ -103,26 +103,26 @@ class GameRoom {
             }
             break;
           case 'answer_question':
-            if (this.lockForSubmitAnwser) {
+            if (this.lockForSubmitAnswer) {
               break;
             }
-            const anwser = msgObject.anwser;
+            const answer = msgObject.answer;
             const qIndex = isNaN(msgObject.index)
               ? this.currentQuestionIndex
               : msgObject.index;
             const question = this.questions[qIndex];
-            const isRight = anwser === question.anwser;
+            const isRight = answer === question.answer;
 
             if (isRight && qIndex === this.currentQuestionIndex) {
-              this.lockForSubmitAnwser = true;
+              this.lockForSubmitAnswer = true;
               this.broadCast({
                 cmd: 'broadcast_result',
                 userId: upwrap.userpeer.userId
               });
             }
 
-            upwrap.anwsers[qIndex] = {
-              anwser,
+            upwrap.answers[qIndex] = {
+              answer,
               right: isRight
             };
             break;
@@ -151,7 +151,7 @@ class GameRoom {
     }, 3000);
   }
   startSequence() {
-    this.lockForSubmitAnwser = false;
+    this.lockForSubmitAnswer = false;
     if (this.currentQuestionIndex >= this.questions.length) {
       this.finishGame(GameRoom.CONST.NORMAL_OVER);
     }
@@ -246,7 +246,7 @@ class GameRoom {
 
 class UserPeerWraperForGameRoom {
   ready: boolean;
-  anwsers: Array<{ anwser: string, right: boolean } | void>;
+  answers: Array<{ answer: string, right: boolean } | void>;
   userpeer: UserPeer;
   gameRoom: GameRoom;
   abort: boolean;
@@ -254,7 +254,7 @@ class UserPeerWraperForGameRoom {
   constructor(up: UserPeer, gr: GameRoom) {
     this.ready = false;
     this.userpeer = up;
-    this.anwsers = [];
+    this.answers = [];
     this.gameRoom = gr;
     this.abort = false;
   }
@@ -265,7 +265,7 @@ class UserPeerWraperForGameRoom {
     const length = this.gameRoom.questions.length;
     let count = 0;
     for (let i = 0; i < length; i++) {
-      if (this.anwsers[i] && this.anwsers[i].right) {
+      if (this.answers[i] && this.answers[i].right) {
         count++;
       }
     }
