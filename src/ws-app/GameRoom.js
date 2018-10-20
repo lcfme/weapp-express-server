@@ -51,13 +51,11 @@ class GameRoom {
       user.sendJSON({
         cmd: 'game_room_created',
         roomId: this.roomId,
-        others: this.users
-          .filter(up => up.userId !== user.userId)
-          .map(up => ({
-            userId: up.userId,
-            avatarUrl: up.avatarUrl,
-            nickName: up.nickName
-          }))
+        others: this.users.filter(up => up.userId !== user.userId).map(up => ({
+          userId: up.userId,
+          avatarUrl: up.avatarUrl,
+          nickName: up.nickName
+        }))
       });
     }
 
@@ -233,6 +231,8 @@ class GameRoom {
         this.broadCast({
           cmd: 'game_winer',
           userId: winer.userpeer.userId,
+          avatarUrl: winer.userpeer.avatarUrl,
+          nickName: winer.userpeer.nickName,
           right: winer.getRightQuestionNumber()
         });
       } else if (excpt === GameRoom.CONST.PEER_QUIT) {
@@ -244,6 +244,8 @@ class GameRoom {
             winer.userpeer.sendJSON({
               cmd: 'game_winer',
               userId: winer.userpeer.userId,
+              avatarUrl: winer.userpeer.avatarUrl,
+              nickName: winer.userpeer.nickName,
               right: winer.getRightQuestionNumber()
             });
           }
