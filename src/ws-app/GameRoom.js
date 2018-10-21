@@ -276,11 +276,13 @@ class GameRoom {
         });
         for (let i = this.users.length; i--; ) {
           const up = this.users[i];
-          if (up.userId === winer.userId) {
+          if (up.userId === winer.userpeer.userId) {
             request(
               `http://live.trunk.koo.cn/api/1024/save_match_result?uuid=${
                 up.userId
-              }&avatarUrl=${encodeURIComponent(up.avatarUrl)}&nickName=${encodeURIComponent(up.nickName)}&smallRoomId=${
+              }&avatarUrl=${encodeURIComponent(
+                up.avatarUrl
+              )}&nickName=${encodeURIComponent(up.nickName)}&smallRoomId=${
                 this.roomId
               }&score=${this.upwrapArray[i].getRightQuestionNumber()}&bonus=100`
             );
@@ -289,7 +291,9 @@ class GameRoom {
             request(
               `http://live.trunk.koo.cn/api/1024/save_match_result?uuid=${
                 up.userId
-              }&avatarUrl=${encodeURIComponent(up.avatarUrl)}&nickName=${encodeURIComponent(up.nickName)}&smallRoomId=${
+              }&avatarUrl=${encodeURIComponent(
+                up.avatarUrl
+              )}&nickName=${encodeURIComponent(up.nickName)}&smallRoomId=${
                 this.roomId
               }&score=${this.upwrapArray[i].getRightQuestionNumber()}&bonus=0`
             );
@@ -312,11 +316,13 @@ class GameRoom {
         }
         for (let i = this.users.length; i--; ) {
           const up = this.users[i];
-          if (up.userId === winer.userId) {
+          if (up.userId === winer.userpeer.userId) {
             request(
               `http://live.trunk.koo.cn/api/1024/save_match_result?uuid=${
                 up.userId
-              }&avatarUrl=${encodeURIComponent(up.avatarUrl)}&nickName=${encodeURIComponent(up.nickName)}&smallRoomId=${
+              }&avatarUrl=${encodeURIComponent(
+                up.avatarUrl
+              )}&nickName=${encodeURIComponent(up.nickName)}&smallRoomId=${
                 this.roomId
               }&score=${this.upwrapArray[i].getRightQuestionNumber()}&bonus=100`
             );
@@ -325,7 +331,9 @@ class GameRoom {
             request(
               `http://live.trunk.koo.cn/api/1024/save_match_result?uuid=${
                 up.userId
-              }&avatarUrl=${encodeURIComponent(up.avatarUrl)}&nickName=${encodeURIComponent(up.nickName)}&smallRoomId=${
+              }&avatarUrl=${encodeURIComponent(
+                up.avatarUrl
+              )}&nickName=${encodeURIComponent(up.nickName)}&smallRoomId=${
                 this.roomId
               }&score=${this.upwrapArray[i].getRightQuestionNumber()}&bonus=0`
             );
