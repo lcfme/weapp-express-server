@@ -19,6 +19,7 @@ export function onConnection(socket, req) {
       nickName,
       avatarUrl
     };
+    console.log(userInfo);
     new UserPeer(userInfo, socket, pm);
   } else {
     socket.close();
