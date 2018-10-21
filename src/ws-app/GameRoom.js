@@ -141,6 +141,9 @@ class GameRoom {
             }
 
             break;
+          case 'player_quit':
+            this.onPeerQuit(upwrap);
+            break;
           default:
             throw 'No Matched COMMAND';
         }
@@ -202,7 +205,8 @@ class GameRoom {
   onPeerQuit(upwrap: UserPeerWraperForGameRoom) {
     upwrap.abort = true;
     this.broadCast({
-      cmd: 'peer_quit'
+      cmd: 'peer_quit',
+      userId: upwrap.userpeer.userId,
     });
     this.finishGame(GameRoom.CONST.PEER_QUIT);
   }
