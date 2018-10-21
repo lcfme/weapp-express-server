@@ -129,6 +129,8 @@ class GameRoom {
                 right: isRight
               };
               this.lockForSubmitAnswer = true;
+              this.currentQuestionIndex += 1;
+              this.startSequence();
             } else if (!isRight && qIndex === this.currentQuestionIndex) {
               upwrap.answers[qIndex] = {
                 answer,
