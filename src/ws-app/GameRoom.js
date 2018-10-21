@@ -277,6 +277,7 @@ class GameRoom {
         for (let i = this.users.length; i--; ) {
           const up = this.users[i];
           if (up.userId === winer.userpeer.userId) {
+            console.log('save result');
             request(
               `http://live.trunk.koo.cn/api/1024/save_match_result?uuid=${
                 up.userId
@@ -288,6 +289,7 @@ class GameRoom {
             );
             continue;
           } else {
+            console.log('save result');
             request(
               `http://live.trunk.koo.cn/api/1024/save_match_result?uuid=${
                 up.userId
@@ -317,6 +319,7 @@ class GameRoom {
         for (let i = this.users.length; i--; ) {
           const up = this.users[i];
           if (up.userId === winer.userpeer.userId) {
+            console.log('save result');
             request(
               `http://live.trunk.koo.cn/api/1024/save_match_result?uuid=${
                 up.userId
@@ -328,6 +331,7 @@ class GameRoom {
             );
             continue;
           } else {
+            console.log('save result');
             request(
               `http://live.trunk.koo.cn/api/1024/save_match_result?uuid=${
                 up.userId
