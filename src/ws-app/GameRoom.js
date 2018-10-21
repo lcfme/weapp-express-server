@@ -274,40 +274,7 @@ class GameRoom {
           nickName: winer.userpeer.nickName,
           right: winer.getRightQuestionNumber()
         });
-        for (let i = this.users.length; i--; ) {
-          const up = this.users[i];
-          if (up.userId === winer.userpeer.userId) {
-            console.log(
-              `http://live.trunk.koo.cn/api/1024/save_match_result?uuid=${
-                up.userId
-              }&smallRoomId=${this.roomId}&score=${this.upwrapArray[
-                i
-              ].getRightQuestionNumber()}&bonus=100`
-            );
-            request(
-              `http://live.trunk.koo.cn/api/1024/save_match_result?uuid=${
-                up.userId
-              }&smallRoomId=${this.roomId}&score=${this.upwrapArray[
-                i
-              ].getRightQuestionNumber()}&bonus=100`,
-              (err, res, body) => {
-                console.log(err, body);
-              }
-            );
-            continue;
-          } else {
-            request(
-              `http://live.trunk.koo.cn/api/1024/save_match_result?uuid=${
-                up.userId
-              }&smallRoomId=${this.roomId}&score=${this.upwrapArray[
-                i
-              ].getRightQuestionNumber()}&bonus=0`,
-              (err, res, body) => {
-                console.log(err, body);
-              }
-            );
-          }
-        }
+        this.reportResult(winer);
       } else if (excpt === GameRoom.CONST.PEER_QUIT) {
         let winer: UserPeerWraperForGameRoom | void;
         for (let i = this.upwrapArray.length; i--; ) {
@@ -323,33 +290,7 @@ class GameRoom {
             });
           }
         }
-        for (let i = this.users.length; i--; ) {
-          const up = this.users[i];
-          if (up.userId === winer.userpeer.userId) {
-            request(
-              `http://live.trunk.koo.cn/api/1024/save_match_result?uuid=${
-                up.userId
-              }&smallRoomId=${this.roomId}&score=${this.upwrapArray[
-                i
-              ].getRightQuestionNumber()}&bonus=100`,
-              (err, res, body) => {
-                console.log(err, body);
-              }
-            );
-            continue;
-          } else {
-            request(
-              `http://live.trunk.koo.cn/api/1024/save_match_result?uuid=${
-                up.userId
-              }&smallRoomId=${this.roomId}&score=${this.upwrapArray[
-                i
-              ].getRightQuestionNumber()}&bonus=0`,
-              (err, res, body) => {
-                console.log(err, body);
-              }
-            );
-          }
-        }
+        this.reportResult(winer);
       }
     }
     this.pm.emit(PeerManager.EVENT.GAME_OVER, this);
@@ -362,6 +303,22 @@ class GameRoom {
     });
     this.callUsersMethod('finishGame');
     this.currentState = GameRoom.STATE.FINISH;
+  }
+  reportResult(winner: UserPeerWraperForGameRoom) {
+    for (let i = this.users.length; i--; ) {
+      const up = this.users[i];
+      let bouns = up.userId === winer.userpeer.userId ? 100 : 0;
+      request(
+        `http://live.trunk.koo.cn/api/1024/save_match_result?uuid=${
+          up.userId
+        }&smallRoomId=${this.roomId}&score=${this.upwrapArray[
+          i
+        ].getRightQuestionNumber()}&bonus=${bouns}`,
+        (err, res, body) => {
+          console.log(err, body);
+        }
+      );
+    }
   }
 }
 
