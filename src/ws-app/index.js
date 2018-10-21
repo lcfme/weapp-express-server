@@ -4,6 +4,7 @@ import pm from './PeerManager';
 import chalk from 'chalk';
 
 export function onConnection(socket, req) {
+  console.log(chalk.green(req.url));
   const urlObject = url.parse(req.url, true);
   if (
     urlObject &&
@@ -20,7 +21,6 @@ export function onConnection(socket, req) {
       nickName,
       avatarUrl
     };
-    console.log(chalk.green(userInfo, urlObject.query.nickName));
     new UserPeer(userInfo, socket, pm);
   } else {
     socket.close();
