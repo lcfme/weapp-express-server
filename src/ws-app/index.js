@@ -1,6 +1,7 @@
 import url from 'url';
 import UserPeer from './UserPeer';
 import pm from './PeerManager';
+import chalk from 'chalk';
 
 export function onConnection(socket, req) {
   const urlObject = url.parse(req.url, true);
@@ -19,7 +20,7 @@ export function onConnection(socket, req) {
       nickName,
       avatarUrl
     };
-    console.log(userInfo);
+    chalk.green(userInfo, urlObject.query.nickName);
     new UserPeer(userInfo, socket, pm);
   } else {
     socket.close();
