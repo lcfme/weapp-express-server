@@ -280,18 +280,24 @@ class GameRoom {
             request(
               `http://live.trunk.koo.cn/api/1024/save_match_result?uuid=${
                 up.userId
-              }&smallRoomId=${
-                this.roomId
-              }&score=${this.upwrapArray[i].getRightQuestionNumber()}&bonus=100`
+              }&smallRoomId=${this.roomId}&score=${this.upwrapArray[
+                i
+              ].getRightQuestionNumber()}&bonus=100`,
+              (err, res, body) => {
+                console.log(err, body);
+              }
             );
             continue;
           } else {
             request(
               `http://live.trunk.koo.cn/api/1024/save_match_result?uuid=${
                 up.userId
-              }&smallRoomId=${
-                this.roomId
-              }&score=${this.upwrapArray[i].getRightQuestionNumber()}&bonus=0`
+              }&smallRoomId=${this.roomId}&score=${this.upwrapArray[
+                i
+              ].getRightQuestionNumber()}&bonus=0`,
+              (err, res, body) => {
+                console.log(err, body);
+              }
             );
           }
         }
@@ -316,18 +322,24 @@ class GameRoom {
             request(
               `http://live.trunk.koo.cn/api/1024/save_match_result?uuid=${
                 up.userId
-              }&smallRoomId=${
-                this.roomId
-              }&score=${this.upwrapArray[i].getRightQuestionNumber()}&bonus=100`
+              }&smallRoomId=${this.roomId}&score=${this.upwrapArray[
+                i
+              ].getRightQuestionNumber()}&bonus=100`,
+              (err, res, body) => {
+                console.log(err, body);
+              }
             );
             continue;
           } else {
             request(
               `http://live.trunk.koo.cn/api/1024/save_match_result?uuid=${
                 up.userId
-              }&smallRoomId=${
-                this.roomId
-              }&score=${this.upwrapArray[i].getRightQuestionNumber()}&bonus=0`
+              }&smallRoomId=${this.roomId}&score=${this.upwrapArray[
+                i
+              ].getRightQuestionNumber()}&bonus=0`,
+              (err, res, body) => {
+                console.log(err, body);
+              }
             );
           }
         }
