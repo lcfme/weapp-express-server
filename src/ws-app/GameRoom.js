@@ -46,7 +46,7 @@ class GameRoom {
     }
 
     request(
-      'http://10.155.24.178/api/1024/question_list',
+      'http://live.trunk.koo.cn/api/1024/question_list',
       (error, response, body) => {
         try {
           if (error) {
@@ -278,14 +278,14 @@ class GameRoom {
           const up = this.users[i];
           if (up.userId === winer.userpeer.userId) {
             console.log(
-              `http://10.155.24.178/api/1024/save_match_result?uuid=${
+              `http://live.trunk.koo.cn/api/1024/save_match_result?uuid=${
                 up.userId
               }&smallRoomId=${this.roomId}&score=${this.upwrapArray[
                 i
               ].getRightQuestionNumber()}&bonus=100`
             );
             request(
-              `http://10.155.24.178/api/1024/save_match_result?uuid=${
+              `http://live.trunk.koo.cn/api/1024/save_match_result?uuid=${
                 up.userId
               }&smallRoomId=${this.roomId}&score=${this.upwrapArray[
                 i
@@ -297,7 +297,7 @@ class GameRoom {
             continue;
           } else {
             request(
-              `http://10.155.24.178/api/1024/save_match_result?uuid=${
+              `http://live.trunk.koo.cn/api/1024/save_match_result?uuid=${
                 up.userId
               }&smallRoomId=${this.roomId}&score=${this.upwrapArray[
                 i
@@ -327,7 +327,7 @@ class GameRoom {
           const up = this.users[i];
           if (up.userId === winer.userpeer.userId) {
             request(
-              `http://10.155.24.178/api/1024/save_match_result?uuid=${
+              `http://live.trunk.koo.cn/api/1024/save_match_result?uuid=${
                 up.userId
               }&smallRoomId=${this.roomId}&score=${this.upwrapArray[
                 i
@@ -339,7 +339,7 @@ class GameRoom {
             continue;
           } else {
             request(
-              `http://10.155.24.178/api/1024/save_match_result?uuid=${
+              `http://live.trunk.koo.cn/api/1024/save_match_result?uuid=${
                 up.userId
               }&smallRoomId=${this.roomId}&score=${this.upwrapArray[
                 i
