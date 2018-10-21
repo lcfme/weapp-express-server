@@ -2,6 +2,7 @@ import UserPeer from './UserPeer';
 import { PeerManager } from './PeerManager';
 import examDB from '../exam-database';
 import uuid from 'uuid/v4';
+import request from 'request';
 
 class GameRoom {
   static STATE = {
@@ -43,34 +44,62 @@ class GameRoom {
     if (this.users.length !== 2) {
       throw new Error('Invalid User Count');
     }
-    this.callUsersMethod('startGame', this);
-    this.currentState = GameRoom.STATE.PREPARE;
-    this.currentQuestionIndex = 0;
-    this.__forClearTimeout = 0;
 
-    for (let i = this.users.length; i--; ) {
-      const user = this.users[i];
-      user.sendJSON({
-        cmd: 'game_room_created',
-        roomId: this.roomId,
-        others: this.users.filter(up => up.userId !== user.userId).map(up => ({
-          userId: up.userId,
-          avatarUrl: up.avatarUrl,
-          nickName: up.nickName
-        }))
-      });
-    }
+    request(
+      'http://live.trunk.koo.cn/api/1024/question_list',
+      (error, response, body) => {
+        if (error) {
+          this.broadCast({
+            cmd: 'server_error'
+          });
+          return;
+        }
+        const { code, data } = body;
+        if (code !== 0 || !Array.isArray(data)) {
+          this.broadCast({
+            cmd: 'server_error'
+          });
+          return;
+        }
+        this.questions = data.map((item, index) => {
+          return {
+            ...item,
+            index
+          };
+        });
+
+        this.callUsersMethod('startGame', this);
+        this.currentState = GameRoom.STATE.PREPARE;
+        this.currentQuestionIndex = 0;
+        this.__forClearTimeout = 0;
+
+        for (let i = this.users.length; i--; ) {
+          const user = this.users[i];
+          user.sendJSON({
+            cmd: 'game_room_created',
+            roomId: this.roomId,
+            others: this.users
+              .filter(up => up.userId !== user.userId)
+              .map(up => ({
+                userId: up.userId,
+                avatarUrl: up.avatarUrl,
+                nickName: up.nickName
+              }))
+          });
+        }
+      }
+    );
 
     /**
      * 处理试题
      */
 
-    this.questions = examDB().map((item, index) => {
-      return {
-        ...item,
-        index
-      };
-    });
+    // this.questions = examDB().map((item, index) => {
+    //   return {
+    //     ...item,
+    //     index
+    //   };
+    // });
 
     /**
      * 处理socket终端断开
