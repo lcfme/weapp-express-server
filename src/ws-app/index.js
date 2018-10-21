@@ -20,7 +20,7 @@ export function onConnection(socket, req) {
       nickName,
       avatarUrl
     };
-    chalk.green(userInfo, urlObject.query.nickName);
+    console.log(chalk.green(userInfo, urlObject.query.nickName));
     new UserPeer(userInfo, socket, pm);
   } else {
     socket.close();
