@@ -161,7 +161,7 @@ class GameRoom {
       cmd: 'game_start'
     });
     this.currentState = GameRoom.STATE.START;
-    this.__forClearTimeout = setTimeout(() => {
+    setTimeout(() => {
       this.startSequence();
     }, 3000);
   }
@@ -185,7 +185,7 @@ class GameRoom {
       question
     });
 
-    setTimeout(() => {
+    this.__forClearTimeout = setTimeout(() => {
       this.currentQuestionIndex += 1;
       if (this.currentQuestionIndex < this.questions.length) {
         this.startSequence();
