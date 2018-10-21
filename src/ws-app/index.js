@@ -12,7 +12,7 @@ export function onConnection(socket, req) {
     urlObject.query.avatarUrl
   ) {
     const token = urlObject.query.token;
-    const nickName = urlObject.query.nickName;
+    const nickName = decodeURIComponent(urlObject.query.nickName);
     const avatarUrl = decodeURIComponent(urlObject.query.avatarUrl);
     const userInfo = {
       userId: token,
