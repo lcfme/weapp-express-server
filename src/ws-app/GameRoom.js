@@ -206,7 +206,7 @@ class GameRoom {
     upwrap.abort = true;
     this.broadCast({
       cmd: 'peer_quit',
-      userId: upwrap.userpeer.userId,
+      userId: upwrap.userpeer.userId
     });
     this.finishGame(GameRoom.CONST.PEER_QUIT);
   }
