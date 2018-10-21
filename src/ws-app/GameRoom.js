@@ -48,44 +48,45 @@ class GameRoom {
     request(
       'http://live.trunk.koo.cn/api/1024/question_list',
       (error, response, body) => {
-        if (error) {
+        try {
+          if (error) {
+            throw error;
+          }
+          const { code, data } = JSON.parse(body);
+          if (code !== 0 || !Array.isArray(data)) {
+            throw new Error('data is not array');
+          }
+          this.questions = data.map((item, index) => {
+            return {
+              ...item,
+              index
+            };
+          });
+
+          this.callUsersMethod('startGame', this);
+          this.currentState = GameRoom.STATE.PREPARE;
+          this.currentQuestionIndex = 0;
+          this.__forClearTimeout = 0;
+
+          for (let i = this.users.length; i--; ) {
+            const user = this.users[i];
+            user.sendJSON({
+              cmd: 'game_room_created',
+              roomId: this.roomId,
+              others: this.users
+                .filter(up => up.userId !== user.userId)
+                .map(up => ({
+                  userId: up.userId,
+                  avatarUrl: up.avatarUrl,
+                  nickName: up.nickName
+                }))
+            });
+          }
+        } catch (err) {
           this.broadCast({
             cmd: 'server_error'
           });
           return;
-        }
-        const { code, data } = body;
-        if (code !== 0 || !Array.isArray(data)) {
-          this.broadCast({
-            cmd: 'server_error'
-          });
-          return;
-        }
-        this.questions = data.map((item, index) => {
-          return {
-            ...item,
-            index
-          };
-        });
-
-        this.callUsersMethod('startGame', this);
-        this.currentState = GameRoom.STATE.PREPARE;
-        this.currentQuestionIndex = 0;
-        this.__forClearTimeout = 0;
-
-        for (let i = this.users.length; i--; ) {
-          const user = this.users[i];
-          user.sendJSON({
-            cmd: 'game_room_created',
-            roomId: this.roomId,
-            others: this.users
-              .filter(up => up.userId !== user.userId)
-              .map(up => ({
-                userId: up.userId,
-                avatarUrl: up.avatarUrl,
-                nickName: up.nickName
-              }))
-          });
         }
       }
     );
@@ -273,6 +274,27 @@ class GameRoom {
           nickName: winer.userpeer.nickName,
           right: winer.getRightQuestionNumber()
         });
+        for (let i = this.users.length; i--; ) {
+          const up = this.users[i];
+          if (up.userId === winer.userId) {
+            request(
+              `http://live.trunk.koo.cn/api/1024/save_match_result?uuid=${
+                up.userId
+              }&avatarUrl=${encodeURIComponent(up.avatarUrl)}&nickName=${encodeURIComponent(up.nickName)}&smallRoomId=${
+                this.roomId
+              }&score=${this.upwrapArray[i].getRightQuestionNumber()}&bonus=100`
+            );
+            continue;
+          } else {
+            request(
+              `http://live.trunk.koo.cn/api/1024/save_match_result?uuid=${
+                up.userId
+              }&avatarUrl=${encodeURIComponent(up.avatarUrl)}&nickName=${encodeURIComponent(up.nickName)}&smallRoomId=${
+                this.roomId
+              }&score=${this.upwrapArray[i].getRightQuestionNumber()}&bonus=0`
+            );
+          }
+        }
       } else if (excpt === GameRoom.CONST.PEER_QUIT) {
         let winer: UserPeerWraperForGameRoom | void;
         for (let i = this.upwrapArray.length; i--; ) {
@@ -286,6 +308,27 @@ class GameRoom {
               nickName: winer.userpeer.nickName,
               right: winer.getRightQuestionNumber()
             });
+          }
+        }
+        for (let i = this.users.length; i--; ) {
+          const up = this.users[i];
+          if (up.userId === winer.userId) {
+            request(
+              `http://live.trunk.koo.cn/api/1024/save_match_result?uuid=${
+                up.userId
+              }&avatarUrl=${encodeURIComponent(up.avatarUrl)}&nickName=${encodeURIComponent(up.nickName)}&smallRoomId=${
+                this.roomId
+              }&score=${this.upwrapArray[i].getRightQuestionNumber()}&bonus=100`
+            );
+            continue;
+          } else {
+            request(
+              `http://live.trunk.koo.cn/api/1024/save_match_result?uuid=${
+                up.userId
+              }&avatarUrl=${encodeURIComponent(up.avatarUrl)}&nickName=${encodeURIComponent(up.nickName)}&smallRoomId=${
+                this.roomId
+              }&score=${this.upwrapArray[i].getRightQuestionNumber()}&bonus=0`
+            );
           }
         }
       }
