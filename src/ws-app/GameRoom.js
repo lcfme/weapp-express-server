@@ -30,6 +30,7 @@ class GameRoom {
   currentState: string;
   upwrapArray: Array<UserPeerWraperForGameRoom>;
   lockForSubmitAnswer: boolean;
+  __forClearTimeout: number;
   constructor(pm: PeerManager, ...users: Array<UserPeer>) {
     this.pm = pm;
     this.users = users.slice(0, 2);
@@ -45,6 +46,7 @@ class GameRoom {
     this.callUsersMethod('startGame', this);
     this.currentState = GameRoom.STATE.PREPARE;
     this.currentQuestionIndex = 0;
+    this.__forClearTimeout = 0;
 
     for (let i = this.users.length; i--; ) {
       const user = this.users[i];
@@ -159,11 +161,12 @@ class GameRoom {
       cmd: 'game_start'
     });
     this.currentState = GameRoom.STATE.START;
-    setTimeout(() => {
+    this.__forClearTimeout = setTimeout(() => {
       this.startSequence();
     }, 3000);
   }
   startSequence() {
+    clearTimeout(this.__forClearTimeout);
     this.lockForSubmitAnswer = false;
     for (let i = this.upwrapArray.length; i--; ) {
       const upwrap = this.upwrapArray[i];
