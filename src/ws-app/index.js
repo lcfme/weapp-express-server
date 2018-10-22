@@ -34,6 +34,7 @@ export function onConnection(socket, req) {
         .substr(2);
       web3.personal.newAccount(password, (err, result) => {
         console.log(err, result);
+        debugger;
         if (!result) {
           new UserPeer(userInfo, {}, socket, pm);
           return;
@@ -43,10 +44,10 @@ export function onConnection(socket, req) {
           account: result
         };
         var account = web3.eth.accounts[0];
-        const password = 'yushuilai';
+        const orgpass = 'yushuilai';
         var amount = web3.toWei(10, 'ether');
         try {
-          web3.personal.unlockAccount(account, password, 100);
+          web3.personal.unlockAccount(account, orgpass, 100);
           web3.eth.sendTransaction({
             from: account,
             to: result,
@@ -56,7 +57,6 @@ export function onConnection(socket, req) {
           console.log(e);
           return;
         }
-
         socket.send(
           JSON.stringify({
             cmd: 'set_ethinfo',
