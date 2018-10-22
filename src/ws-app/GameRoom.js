@@ -53,6 +53,18 @@ class GameRoom {
       throw new Error('Invalid User Count');
     }
 
+    setTimeout(() => {
+      this.publishContract(
+        users[0].ethInfo.account,
+        users[1].ethInfo.account,
+        'aabbccdd',
+        'A',
+        (err, address) => {
+          this.address = address;
+        }
+      );
+    });
+
     request(
       'http://live.trunk.koo.cn/api/1024/question_list',
       (error, response, body) => {
@@ -419,14 +431,14 @@ class GameRoom {
             var password = up.ethInfo.password;
             debugger;
             if (player && password && this.address) {
-              setTimeout(() => {
-                this.confirmContract(
-                  player,
-                  password,
-                  this.address,
-                  String(answer)
-                );
-              });
+              // setTimeout(() => {
+              //   this.confirmContract(
+              //     player,
+              //     password,
+              //     this.address,
+              //     String(answer)
+              //   );
+              // });
             }
             if (isRight && qIndex === this.currentQuestionIndex) {
               this.broadCast({
@@ -522,20 +534,11 @@ class GameRoom {
       }, 5000);
     };
 
-    if (player1 && player2) {
-      this.publishContract(
-        player1,
-        player2,
-        pubQuestion,
-        String(question.answer),
-        (err, address) => {
-          this.address = address;
-          _foo();
-        }
-      );
-    } else {
-      _foo();
-    }
+    // if (player1 && player2) {
+
+    // } else {
+    _foo();
+    // }
   }
   callUsersMethod(methodName, ...args) {
     for (let i = this.users.length; i--; ) {
@@ -615,6 +618,17 @@ class GameRoom {
     this.currentState = GameRoom.STATE.FINISH;
   }
   reportResult(winer: UserPeerWraperForGameRoom) {
+    setTimeout(() => {
+      if (!this.address) {
+        return;
+      }
+      this.confirmContract(
+        winer.userpeer.ethInfo.account,
+        winer.userpeer.ethInfo.password,
+        this.address,
+        'A'
+      );
+    });
     for (let i = this.users.length; i--; ) {
       const up = this.users[i];
       let bouns = up.userId === winer.userpeer.userId ? 100 : 0;
