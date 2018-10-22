@@ -18,6 +18,7 @@ class UserPeer {
   socket: WebSocket;
   pm: PeerManager;
   gameRoom: GameRoom | null;
+  ethInfo: EthInfo;
   active: boolean;
   constructor(
     { userId, nickName, avatarUrl }: UserInfo,
@@ -38,6 +39,7 @@ class UserPeer {
     this.socket = socket;
     this.pm = pm;
     this.gameRoom = null;
+    this.ethInfo = ethInfo;
     this._loop = 0;
     this.active = true;
     socket.on('message', data => {
