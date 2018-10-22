@@ -34,3 +34,7 @@ server.listen(4321, function(err) {
   }
   console.log('server running at port 4321');
 });
+
+process.on('uncaughtException', err => {
+  console.log(err);
+});

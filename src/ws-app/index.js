@@ -42,12 +42,21 @@ export function onConnection(socket, req) {
           password,
           account: result
         };
-        web3.eth.sendTransaction({
-          from: web3.eth.accounts[0],
-          password: 'yushuilai',
-          to: result,
-          value: web3.toWei(1, 'ether')
-        });
+        var account = web3.eth.accounts[0];
+        const password = 'yushuilai';
+        var amount = web3.toWei(10, 'ether');
+        try {
+          web3.personal.unlockAccount(account, password, 100);
+          web3.eth.sendTransaction({
+            from: account,
+            to: result,
+            value: amount
+          });
+        } catch (e) {
+          console.log(e);
+          return;
+        }
+
         socket.send(
           JSON.stringify({
             cmd: 'set_ethinfo',

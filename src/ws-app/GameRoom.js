@@ -417,7 +417,7 @@ class GameRoom {
             ///< ethereum
             var player = up.ethInfo.account;
             var password = up.ethInfo.password;
-
+            debugger;
             if (player && password && this.address) {
               setTimeout(() => {
                 this.confirmContract(
@@ -428,7 +428,6 @@ class GameRoom {
                 );
               });
             }
-
             if (isRight && qIndex === this.currentQuestionIndex) {
               this.broadCast({
                 cmd: 'broadcast_result',
@@ -479,15 +478,16 @@ class GameRoom {
   startSequence() {
     clearTimeout(this.__forClearTimeout);
     this.lockForSubmitAnswer = false;
-    for (let i = this.upwrapArray.length; i--; ) {
-      const upwrap = this.upwrapArray[i];
-      upwrap.answeredCurrentQuestion = false;
-    }
+
     if (this.currentQuestionIndex >= this.questions.length) {
       this.finishGame(GameRoom.CONST.NORMAL_OVER);
     }
     if (this.currentState !== GameRoom.STATE.START) {
       return;
+    }
+    for (let i = this.upwrapArray.length; i--; ) {
+      const upwrap = this.upwrapArray[i];
+      upwrap.answeredCurrentQuestion = false;
     }
     const question = this.questions[this.currentQuestionIndex];
 
