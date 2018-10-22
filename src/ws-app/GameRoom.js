@@ -298,7 +298,7 @@ class GameRoom {
     try {
       web3.personal.unlockAccount(account, password, 100);
     } catch (e) {
-      console.log('confirmContract cunlockAccount error');
+      console.log('confirmContract cunlockAccount error', e);
       return;
     }
 

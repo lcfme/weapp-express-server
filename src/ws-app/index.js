@@ -34,7 +34,7 @@ export function onConnection(socket, req) {
         .substr(2);
       web3.personal.newAccount(password, (err, result) => {
         console.log(err, result);
-        if (err) {
+        if (!result) {
           new UserPeer(userInfo, {}, socket, pm);
           return;
         }
