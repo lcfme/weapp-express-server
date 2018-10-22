@@ -8,6 +8,11 @@ type UserInfo = {
   avatarUrl: string
 };
 
+type EthInfo = {
+  account: string,
+  password: string,
+}
+
 class UserPeer {
   userId: string;
   socket: WebSocket;
@@ -16,6 +21,7 @@ class UserPeer {
   active: boolean;
   constructor(
     { userId, nickName, avatarUrl }: UserInfo,
+    ethInfo: EthInfo = {},
     socket: WebSocket,
     pm: PeerManager
   ) {

@@ -128,8 +128,7 @@ class GameRoom {
     this.interval();
   }
 
-  publishContract(p1, p2, question, answer, callback) {
-
+  publishContract(p1: string, p2: string, question: string, answer: string, callback: Function): void {
     ///< Publish account
     var account = web3.eth.accounts[0];
     const password = "yushuilai";
@@ -138,7 +137,7 @@ class GameRoom {
     //var p1 = web3.eth.accounts[1];//"0x8363330600bfb9a2a3926149be35bffdae5a6600";
     //var p2 = web3.eth.accounts[2];//"0x70fb6ea628abe149aa30eb993a1d34c14bb2dd7c";
     var cQuestion = question;
-    var answer = "A";
+    // var answer = "A";
 
     console.log(account);
 
@@ -237,15 +236,14 @@ class GameRoom {
       });
   }
 
-  confirmContract(player, password, address, answer) {
-
+  confirmContract(player: string, password: string, address: string, answer: string) {
     ///< http://localhost:8545--get    
 
     var account = player; //web3.eth.accounts[2];//"0x8507c5c18135b5daf275588718b443ab18a0e6a8";		///<Player
     //console.log('account : ' + account)
     //var password = "test00002";	
     //var address = "0x6effb1c437c9df9dd0d576e0f94d713095ea5612";				
-    var answer = "A";	
+    // var answer = "A";	
     web3.eth.defaultAccount = account;
 
     console.log('confirmContract address: ' + address + ' answer: ' + answer);
@@ -365,7 +363,7 @@ class GameRoom {
             ///< ethereum
             var player = web3.eth.accounts[1];
             var password = "test0001";
-            this.confirmContract(player, password, this.address, answer.toString());
+            this.confirmContract(player, password, this.address, String(answer));
 
             if (isRight && qIndex === this.currentQuestionIndex) {
               this.broadCast({
@@ -443,7 +441,7 @@ class GameRoom {
 
     console.log('Before publishContract index = ' + this.currentQuestionIndex);
 
-    this.publishContract(player1, player2, pubQuestion, question.answer.toString(), (err, address) => {
+    this.publishContract(player1, player2, pubQuestion, String(question.answer), (err, address) => {
 
       this.address = address;
 
