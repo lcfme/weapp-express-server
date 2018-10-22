@@ -540,7 +540,7 @@ class GameRoom {
     this.currentState = GameRoom.STATE.FINISH;
   }
   reportResult(winer: UserPeerWraperForGameRoom) {
-    for (let i = this.users.length; i--;) {
+    for (let i = this.users.length; i--; ) {
       const up = this.users[i];
       let bouns = up.userId === winer.userpeer.userId ? 100 : 0;
       request(
