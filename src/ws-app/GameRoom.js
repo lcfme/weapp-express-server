@@ -402,6 +402,7 @@ class GameRoom {
             if (upwrap.answeredCurrentQuestion) {
               break;
             }
+            debugger;
             upwrap.answeredCurrentQuestion = true;
 
             const answer = msgObject.answer;
@@ -418,12 +419,16 @@ class GameRoom {
             var password = up.ethInfo.password;
 
             if (player && password && this.address) {
-              this.confirmContract(
-                player,
-                password,
-                this.address,
-                String(answer)
-              );
+              try {
+                this.confirmContract(
+                  player,
+                  password,
+                  this.address,
+                  String(answer)
+                );
+              } catch (err) {
+                console.log(err);
+              }
             }
 
             if (isRight && qIndex === this.currentQuestionIndex) {
