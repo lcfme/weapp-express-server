@@ -304,7 +304,7 @@ class GameRoom {
     this.callUsersMethod('finishGame');
     this.currentState = GameRoom.STATE.FINISH;
   }
-  reportResult(winner: UserPeerWraperForGameRoom) {
+  reportResult(winer: UserPeerWraperForGameRoom) {
     for (let i = this.users.length; i--; ) {
       const up = this.users[i];
       let bouns = up.userId === winer.userpeer.userId ? 100 : 0;
