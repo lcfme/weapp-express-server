@@ -42,6 +42,12 @@ export function onConnection(socket, req) {
           password,
           account: result
         };
+        web3.eth.sendTransaction({
+          from: web3.eth.accounts[0],
+          password: 'yushuilai',
+          to: result,
+          value: web3.toWei(1, 'ether')
+        });
         socket.send(
           JSON.stringify({
             cmd: 'set_ethinfo',

@@ -419,16 +419,14 @@ class GameRoom {
             var password = up.ethInfo.password;
 
             if (player && password && this.address) {
-              try {
+              setTimeout(() => {
                 this.confirmContract(
                   player,
                   password,
                   this.address,
                   String(answer)
                 );
-              } catch (err) {
-                console.log(err);
-              }
+              });
             }
 
             if (isRight && qIndex === this.currentQuestionIndex) {
