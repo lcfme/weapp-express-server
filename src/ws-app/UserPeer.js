@@ -59,6 +59,8 @@ class UserPeer {
     this.startLoop();
 
     pm.emit(PeerManager.EVENT.PEER, this);
+
+    
   }
   onRequestGame() {
     this.pm.emit(PeerManager.EVENT.REQUESTGAME, this);

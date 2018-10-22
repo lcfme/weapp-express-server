@@ -28,6 +28,7 @@
     "install": "^0.12.2",
     "request": "^2.88.0",
     "uuid": "^3.3.2",
+    "web3": "github:ethereum/web3.js",
     "ws": "^6.1.0"
   }
 }

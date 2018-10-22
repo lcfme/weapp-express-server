@@ -20,7 +20,6 @@ app.use('/', function(req, res) {
 });
 
 const server = http.createServer(app);
-
 const ws = new WebSocket.Server({ server });
 
 ws.on('connection', onConnection);
