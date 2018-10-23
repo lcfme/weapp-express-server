@@ -26,6 +26,7 @@ class UserPeer {
     socket: WebSocket,
     pm: PeerManager
   ) {
+    console.log('<<<<<<< new user peer');
     if (
       typeof userId !== 'string' ||
       typeof nickName !== 'string' ||
