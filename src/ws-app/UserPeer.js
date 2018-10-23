@@ -10,8 +10,8 @@ type UserInfo = {
 
 type EthInfo = {
   account: string,
-  password: string,
-}
+  password: string
+};
 
 class UserPeer {
   userId: string;
@@ -61,14 +61,11 @@ class UserPeer {
       this.destroy();
     });
     socket.on('error', err => {
-      console.error(err);
       this.destroy();
     });
     this.startLoop();
 
     pm.emit(PeerManager.EVENT.PEER, this);
-
-    
   }
   onRequestGame() {
     this.pm.emit(PeerManager.EVENT.REQUESTGAME, this);
@@ -86,6 +83,7 @@ class UserPeer {
     this.active = false;
     this.pm.emit(PeerManager.EVENT.QUIT, this);
     this.socket.removeAllListeners();
+    this.socket.close();
   }
   startGame(gr: GameRoom) {
     this.gameRoom = gr;

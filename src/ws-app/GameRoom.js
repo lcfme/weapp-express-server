@@ -429,7 +429,6 @@ class GameRoom {
             ///< ethereum
             var player = up.ethInfo.account;
             var password = up.ethInfo.password;
-            debugger;
             if (player && password && this.address) {
               // setTimeout(() => {
               //   this.confirmContract(
@@ -568,43 +567,47 @@ class GameRoom {
     if (this.currentState === GameRoom.STATE.FINISH) {
       return;
     }
-    if (this.currentState === GameRoom.STATE.START) {
-      if (excpt === GameRoom.CONST.NORMAL_OVER) {
-        let winer: UserPeerWraperForGameRoom | void;
-        for (let i = this.upwrapArray.length; i--; ) {
-          let upwrap = this.upwrapArray[i];
-          if (!winer) winer = upwrap;
-          if (
-            upwrap.getRightQuestionNumber() > winer.getRightQuestionNumber()
-          ) {
-            winer = upwrap;
+    try {
+      if (this.currentState === GameRoom.STATE.START) {
+        if (excpt === GameRoom.CONST.NORMAL_OVER) {
+          let winer: UserPeerWraperForGameRoom | void;
+          for (let i = this.upwrapArray.length; i--; ) {
+            let upwrap = this.upwrapArray[i];
+            if (!winer) winer = upwrap;
+            if (
+              upwrap.getRightQuestionNumber() > winer.getRightQuestionNumber()
+            ) {
+              winer = upwrap;
+            }
           }
-        }
-        this.broadCast({
-          cmd: 'game_winer',
-          userId: winer.userpeer.userId,
-          avatarUrl: winer.userpeer.avatarUrl,
-          nickName: winer.userpeer.nickName,
-          right: winer.getRightQuestionNumber()
-        });
-        this.reportResult(winer);
-      } else if (excpt === GameRoom.CONST.PEER_QUIT) {
-        let winer: UserPeerWraperForGameRoom | void;
-        for (let i = this.upwrapArray.length; i--; ) {
-          const upwrap = this.upwrapArray[i];
-          if (!upwrap.abort) {
-            winer = upwrap;
-            winer.userpeer.sendJSON({
-              cmd: 'game_winer',
-              userId: winer.userpeer.userId,
-              avatarUrl: winer.userpeer.avatarUrl,
-              nickName: winer.userpeer.nickName,
-              right: winer.getRightQuestionNumber()
-            });
+          this.broadCast({
+            cmd: 'game_winer',
+            userId: winer.userpeer.userId,
+            avatarUrl: winer.userpeer.avatarUrl,
+            nickName: winer.userpeer.nickName,
+            right: winer.getRightQuestionNumber()
+          });
+          this.reportResult(winer);
+        } else if (excpt === GameRoom.CONST.PEER_QUIT) {
+          let winer: UserPeerWraperForGameRoom | void;
+          for (let i = this.upwrapArray.length; i--; ) {
+            const upwrap = this.upwrapArray[i];
+            if (!upwrap.abort) {
+              winer = upwrap;
+              winer.userpeer.sendJSON({
+                cmd: 'game_winer',
+                userId: winer.userpeer.userId,
+                avatarUrl: winer.userpeer.avatarUrl,
+                nickName: winer.userpeer.nickName,
+                right: winer.getRightQuestionNumber()
+              });
+            }
           }
+          this.reportResult(winer);
         }
-        this.reportResult(winer);
       }
+    } catch (err) {
+      console.warn(err);
     }
     this.pm.emit(PeerManager.EVENT.GAME_OVER, this);
     // 清楚socket绑定事件

@@ -32,10 +32,12 @@ export function onConnection(socket, req) {
       const password = Math.random()
         .toString(16)
         .substr(2);
+      let __tempLock = false;
       web3.personal.newAccount(password, (err, result) => {
-        console.log(err, result);
-        debugger;
-        if (!result) {
+        if (__tempLock) {
+          return;
+        }
+        if (err || !result) {
           new UserPeer(userInfo, {}, socket, pm);
           return;
         }
@@ -65,6 +67,10 @@ export function onConnection(socket, req) {
         );
         new UserPeer(userInfo, ethInfo, socket, pm);
       });
+      setTimeout(() => {
+        __tempLock = true;
+        new UserPeer(userInfo, {}, socket, pm);
+      }, 5000);
     } else {
       const ethInfo = {
         account: ethAccount,
