@@ -74,7 +74,7 @@ export function onConnection(socket, req) {
         if (__tempLock) return;
         __tempLock = true;
         new UserPeer(userInfo, {}, socket, pm);
-      }, 5000);
+      }, 1000);
     } else {
       const ethInfo = {
         account: ethAccount,
