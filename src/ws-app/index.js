@@ -28,15 +28,18 @@ export function onConnection(socket, req) {
       nickName,
       avatarUrl
     };
+    debugger;
     if (!ethAccount || !ethPass) {
       const password = Math.random()
         .toString(16)
         .substr(2);
       let __tempLock = false;
       web3.personal.newAccount(password, (err, result) => {
+        debugger;
         if (__tempLock) {
           return;
         }
+        __tempLock = true;
         if (err || !result) {
           new UserPeer(userInfo, {}, socket, pm);
           return;
@@ -68,6 +71,7 @@ export function onConnection(socket, req) {
         new UserPeer(userInfo, ethInfo, socket, pm);
       });
       setTimeout(() => {
+        if (__tempLock) return;
         __tempLock = true;
         new UserPeer(userInfo, {}, socket, pm);
       }, 5000);
